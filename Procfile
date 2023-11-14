@@ -1,1 +1,1 @@
-web: gunicorn runner:app --bind
+web: gunicorn runner:app

@@ -8,6 +8,8 @@ Original file is located at
 
 # Ví dụ Collaborative Filtering
 """
+import os
+
 from pymongo import MongoClient
 
 # from google.colab import drive
@@ -123,7 +125,7 @@ class CF(object):
 
     def refresh(self):
         """
-        Normalize data and calculate similarity matrix again
+        Normalize data2 and calculate similarity matrix again
         (after some few ratings change)
         """
         self.normalize_Y()
@@ -197,7 +199,7 @@ class CF(object):
         return recommendations
 
 
-"""## Import data from mongoDB in ratings collection"""
+"""## Import data2 from mongoDB in ratings collection"""
 
 
 def get_data():
@@ -206,14 +208,21 @@ def get_data():
     db = client['test']
     collection = db['ratings']
 
-    # Fetch data from MongoDB collection
+    # Fetch data2 from MongoDB collection
     data = list(collection.find())
 
     # Create a DataFrame
     df = pd.DataFrame(data)
 
-    # Specify the path where you want to save the CSV file
-    csv_path = 'data/ratings.csv'
+    # Specify the directory where you want to save the CSV file
+    directory = 'data'
+
+    # Create the directory if it doesn't exist
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # Specify the path for the CSV file within the directory
+    csv_path = os.path.join(directory, 'ratings.csv')
 
     # Save DataFrame to CSV
     df.to_csv(csv_path, index=False)
@@ -232,11 +241,12 @@ def show_data():
     return df
 
 
-"""## Use example data in test/data"""
+"""## Use example data2 in test/data2"""
 
 
 def rec_with_ratings():
     r_cols = ['user', 'product', 'rating']
+
     df = pd.read_csv('data/fake_data.csv', encoding='latin-1')
     ratings = df[r_cols]
     Y_data = ratings.to_numpy()

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 fake = Faker()
 
-# Sample data
+# Sample data2
 products = ["6541b60ac5119cad40d2b8a8", "650fa6d68777e3057833a455", "6541b411c5119cad40d2b890",
             "6541b729c5119cad40d2b8b4", "6541b2e7c5119cad40d2b884", "6541b2e7c5119cad40d2b720",
             "6541b2e7c5119cad40d2d413", "6541b2e7c5119cad40d2b8a0", "6541b2e7c5119cad40d2h624",
@@ -13,7 +13,7 @@ products = ["6541b60ac5119cad40d2b8a8", "650fa6d68777e3057833a455", "6541b411c51
 users = ["64e9839b01a17287f86b9c8f", "654eddeb8b50cc2f30842d1a", "6550a740ea03570028ea3b96",
          "6550a740ea03570028ea3b97", "6550a740ea03570028ea3b98",]
 
-# Generate fake data
+# Generate fake data2
 fake_data = []
 for _ in range(40):
     record = {
@@ -27,7 +27,7 @@ for _ in range(40):
     fake_data.append(record)
 
 # Export to CSV file
-csv_file_path = "../src/data/fake_data.csv"
+csv_file_path = "../src/data2/fake_data.csv"
 fields = ["_id", "rating", "product", "user", "createdAt", "__v"]
 
 with open(csv_file_path, mode='w', newline='') as file:
@@ -36,7 +36,7 @@ with open(csv_file_path, mode='w', newline='') as file:
     # Write header
     writer.writeheader()
 
-    # Write data
+    # Write data2
     writer.writerows(fake_data)
 
-print(f"Fake data exported to {csv_file_path}")
+print(f"Fake data2 exported to {csv_file_path}")

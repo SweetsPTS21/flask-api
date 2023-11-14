@@ -10,14 +10,14 @@ class Recommendation(Resource):
     def get(self, user_id: str):
         file_path = "data/cf0.json"
 
-        # Load data from the JSON file
+        # Load data2 from the JSON file
         with open(file_path, "r") as json_file:
             data = json.load(json_file)
 
-        # Print the loaded data for debugging
+        # Print the loaded data2 for debugging
         print(data)
 
-        # Check if user_id exists in data
+        # Check if user_id exists in data2
         if user_id in data:
             recommend_items = data[user_id]
             return {"user_id": user_id, "recommend_items": recommend_items}
@@ -31,23 +31,31 @@ class Build(Resource):
         data = show_data()
         result = rec_with_ratings()
 
-        file_path_0 = "data/cf0.json"
+        # Specify the directory where you want to save the CSV file
+        directory = 'data'
 
-        # Save the data to a JSON file
+        # Create the directory if it doesn't exist
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # Specify the path for the CSV file within the directory
+        file_path_0 = os.path.join(directory, 'cf0.json')
+
+        # Save the data2 to a JSON file
         with open(file_path_0, "w") as json_file:
             json.dump(result[0], json_file)
 
         print(f"Data cf0 has been saved to {file_path_0}")
 
-        file_path_1 = "data/cf1.json"
+        file_path_1 = os.path.join(directory, 'cf1.json')
 
-        # Save the data to a JSON file
+        # Save the data2 to a JSON file
         with open(file_path_1, "w") as json_file:
             json.dump(result[1], json_file)
 
         print(f"Data cf1 has been saved to {file_path_1}")
 
-        return f"data: {data} \nresult: {result}"
+        return f"data2: {data} \nresult: {result}"
 
 
 def create_app(test_config=None):

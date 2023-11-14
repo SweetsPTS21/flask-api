@@ -237,7 +237,7 @@ def show_data():
 
 def rec_with_ratings():
     r_cols = ['user', 'product', 'rating']
-    df = pd.read_csv('src/data/fake_data.csv', encoding='latin-1')
+    df = pd.read_csv('data/fake_data.csv', encoding='latin-1')
     ratings = df[r_cols]
     Y_data = ratings.to_numpy()
 
@@ -260,7 +260,7 @@ def rec_with_ratings():
 
 def rec_with_test():
     r_cols = ['user_id', 'item_id', 'rating']
-    ratings = pd.read_csv('src/data/ex.dat', sep=' ', names=r_cols, encoding='latin-1')
+    ratings = pd.read_csv('data/ex.dat', sep=' ', names=r_cols, encoding='latin-1')
     Y_data = ratings.to_numpy()
 
     # Lọc Cộng Tác dựa trên Người dùng (User-User Collaborative Filtering)

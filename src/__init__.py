@@ -39,7 +39,7 @@ class Build(Resource):
 
         print(f"Data cf0 has been saved to {file_path_0}")
 
-        file_path_1 = "src/data/cf1.json"
+        file_path_1 = "../data/cf1.json"
 
         # Save the data to a JSON file
         with open(file_path_1, "w") as json_file:

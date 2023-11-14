@@ -2,13 +2,13 @@ import json
 
 from flask import Flask
 from flask_restful import Resource, Api
-from services.CF import get_data, show_data, rec_with_ratings
+from src.CF import get_data, show_data, rec_with_ratings
 import os
 
 
 class Recommendation(Resource):
     def get(self, user_id: str):
-        file_path = "../data/cf0.json"
+        file_path = "data/cf0.json"
 
         # Load data from the JSON file
         with open(file_path, "r") as json_file:
@@ -31,7 +31,7 @@ class Build(Resource):
         data = show_data()
         result = rec_with_ratings()
 
-        file_path_0 = "../data/cf0.json"
+        file_path_0 = "data/cf0.json"
 
         # Save the data to a JSON file
         with open(file_path_0, "w") as json_file:
@@ -39,7 +39,7 @@ class Build(Resource):
 
         print(f"Data cf0 has been saved to {file_path_0}")
 
-        file_path_1 = "../data/cf1.json"
+        file_path_1 = "data/cf1.json"
 
         # Save the data to a JSON file
         with open(file_path_1, "w") as json_file:

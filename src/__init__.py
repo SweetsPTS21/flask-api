@@ -8,7 +8,7 @@ import os
 
 class Recommendation(Resource):
     def get(self, user_id: str):
-        file_path = "data/cf0.json"
+        file_path = "../data/cf0.json"
 
         # Load data from the JSON file
         with open(file_path, "r") as json_file:
@@ -31,7 +31,7 @@ class Build(Resource):
         data = show_data()
         result = rec_with_ratings()
 
-        file_path_0 = "data/cf0.json"
+        file_path_0 = "../data/cf0.json"
 
         # Save the data to a JSON file
         with open(file_path_0, "w") as json_file:

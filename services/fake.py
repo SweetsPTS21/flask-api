@@ -27,7 +27,7 @@ for _ in range(40):
     fake_data.append(record)
 
 # Export to CSV file
-csv_file_path = "../src/data2/fake_data.csv"
+csv_file_path = "data/fake_data.csv"
 fields = ["_id", "rating", "product", "user", "createdAt", "__v"]
 
 with open(csv_file_path, mode='w', newline='') as file:

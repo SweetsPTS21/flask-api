@@ -247,7 +247,7 @@ def show_data():
 def rec_with_ratings():
     r_cols = ['user', 'product', 'rating']
 
-    df = pd.read_csv('data/fake_data.csv', encoding='latin-1')
+    df = pd.read_csv('data/ratings_data.csv', encoding='latin-1')
     ratings = df[r_cols]
     Y_data = ratings.to_numpy()
 
@@ -257,14 +257,16 @@ def rec_with_ratings():
 
     result = []
     print(f"Singularity matrix is: \n{rs.S}")
-    recommendations = rs.show_recommendation()
-    result.append(rs.convert_recommendations(recommendations))
+    recommend_cf1 = rs.show_recommendation()
+    result.append(rs.convert_recommendations(recommend_cf1))
 
+    # Lọc Cộng Tác theo Mục (Item-Item Collaborative Filtering)
     rs_2 = CF(Y_data, k=2, CF=0)
     rs_2.fit()
 
     print(f"Singularity matrix is: \n{rs_2.S}")
-    result.append(rs_2.show_recommendation())
+    recommend_cf2 = rs_2.show_recommendation()
+    result.append(rs_2.convert_recommendations(recommend_cf2))
     return result
 
 

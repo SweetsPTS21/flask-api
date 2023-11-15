@@ -14,10 +14,10 @@ class Recommendation(Resource):
         with open(file_path, "r") as json_file:
             data = json.load(json_file)
 
-        # Print the loaded data2 for debugging
-        print(data)
+        # Print the loaded data for debugging
+        # print(data)
 
-        # Check if user_id exists in data2
+        # Check if user_id exists in data
         if user_id in data:
             recommend_items = data[user_id]
             return {"user_id": user_id, "recommend_items": recommend_items}
@@ -29,16 +29,21 @@ class Build(Resource):
     def get(self):
         get_data()
         data = show_data()
+
+        # show data from mongoDB
+        print(f"mongoDB data: {data}")
+
+        # build recommendation model
         result = rec_with_ratings()
 
-        # Specify the directory where you want to save the CSV file
+        # Specify the directory where you want to save the json file
         directory = 'data'
 
         # Create the directory if it doesn't exist
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        # Specify the path for the CSV file within the directory
+        # Specify the path for the json file within the directory
         file_path_0 = os.path.join(directory, 'cf0.json')
 
         # Save the data2 to a JSON file
@@ -55,7 +60,7 @@ class Build(Resource):
 
         print(f"Data cf1 has been saved to {file_path_1}")
 
-        return f"data2: {data} \nresult: {result}"
+        return f"result: {result}"
 
 
 def create_app(test_config=None):
@@ -73,7 +78,7 @@ def create_app(test_config=None):
     def index():
         return "Hello ???"
 
-    api.add_resource(Recommendation, "/recommendation/<string:user_id>")
+    api.add_resource(Recommendation, "/recommend/<string:user_id>")
     api.add_resource(Build, "/build")
 
     return app

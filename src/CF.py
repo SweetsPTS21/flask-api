@@ -11,6 +11,7 @@ Original file is located at
 import os
 
 from pymongo import MongoClient
+from sklearn.utils.extmath import softmax
 
 # from google.colab import drive
 # drive.mount('/content/drive')
@@ -64,19 +65,17 @@ class CF(object):
         for user_index, item_indices in recommendations.items():
             user_id = next((user_id for user_id, index in self.user_id_to_index.items() if index == user_index), None)
 
+            # append item id and rating to converted_recommendations
             if user_id is not None:
-                converted_item_ids = [
-                    next((item_id for item_id, index in self.item_id_to_index.items() if index == item_index), None) for
-                    item_index in item_indices]
+                converted_item_ids = []
+                for item_index, rating in item_indices:
+                    item_id = next((item_id for item_id, index in self.item_id_to_index.items() if index == item_index),
+                                   None)
+                    if item_id is not None:
+                        converted_item_ids.append([item_id, rating])
                 converted_recommendations[user_id] = converted_item_ids
 
         return converted_recommendations
-
-    def test_data(self):
-        return self.n_users, self.n_items
-
-    def add(self, new_data):
-        self.Y_data = np.concatenate((self.Y_data, new_data), axis=0)
 
     def normalize_Y(self):
         """
@@ -173,29 +172,37 @@ class CF(object):
             for i in range(self.n_items):
                 if i not in items_rated_by_u:
                     rating = self.pred(u, i)
-                    if rating > 0:
-                        recommended_items.append(i)
+                    if rating > 0.5:
+                        recommended_items.append([i, rating])
         else:
             for i in range(self.n_users):
                 if i not in items_rated_by_u:
                     rating = self.pred(u, i)
-                    if rating > 0:
-                        recommended_items.append(i)
+                    if rating > 0.5:
+                        recommended_items.append([i, rating])
 
+        print("recommend item")
+        print(recommended_items)
         return recommended_items
+
+    def sortByRating(self, item):
+        return item[1]
 
     def show_recommendation(self):
         recommendations = {}
 
         if self.CF:
             for u in range(self.n_users):
-                recommended_items = self.recommend(u)
+                # sort by
+                recommended_items = sorted(self.recommend(u), key=self.sortByRating, reverse=True)
                 recommendations[u] = recommended_items
         else:
             for i in range(self.n_items):
-                recommended_users = self.recommend(i)
+                recommended_users = sorted(self.recommend(i), key=self.sortByRating, reverse=True)
                 recommendations[i] = recommended_users
 
+        print("rec2")
+        print(recommendations)
         return recommendations
 
 
@@ -268,80 +275,3 @@ def rec_with_ratings():
     recommend_cf2 = rs_2.show_recommendation()
     result.append(rs_2.convert_recommendations(recommend_cf2))
     return result
-
-
-def rec_with_test():
-    r_cols = ['user_id', 'item_id', 'rating']
-    ratings = pd.read_csv('data/ex.dat', sep=' ', names=r_cols, encoding='latin-1')
-    Y_data = ratings.to_numpy()
-
-    # Lọc Cộng Tác dựa trên Người dùng (User-User Collaborative Filtering)
-    rs = CF(Y_data, k=2, CF=1)
-    rs.fit()
-
-    result = []
-    print(f"Singularity matrix is: \n{rs.S}")
-    result.append(rs.show_recommendation())
-
-    rs_2 = CF(Y_data, k=2, CF=0)
-    rs_2.fit()
-
-    print(f"Singularity matrix is: \n{rs_2.S}")
-    result.append(rs_2.show_recommendation())
-    return result
-
-
-"""## With MovieLens 100k dataset
-
-[Bộ dataset MovieLens 100k](https://grouplens.org/datasets/movielens/100k/) được công bố bởi GroupLens vào tháng 4/1998. MovieLens gồm có 100,000 *ratings* từ 943 *users* cho 1682 bộ phim (có dung lượng là 5MB)
-"""
-
-
-def rec_with_data_movie(type):
-    r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
-
-    ratings_base = pd.read_csv('test_data/ub.base', sep='\t', names=r_cols, encoding='latin-1')
-    ratings_test = pd.read_csv('test_data/ub.test', sep='\t', names=r_cols, encoding='latin-1')
-
-    rate_train = ratings_base.to_numpy()
-    rate_test = ratings_test.to_numpy()
-
-    # indices start from 0
-    rate_train[:, :2] -= 1
-    rate_test[:, :2] -= 1
-
-    ratings_base.head()
-
-    len(np.unique(ratings_base['user_id']))
-
-    ratings_test.head()
-
-    np.unique(ratings_base['movie_id'])
-
-    if type == 1:
-        """**Sử dụng Lọc Cộng tác theo Người dùng (User-User Collaborative Filtering)**"""
-        rs = CF(rate_train, k=30, CF=1)
-        rs.fit()
-
-        n_tests = rate_test.shape[0]
-        SE = 0  # squared error
-        for n in range(n_tests):
-            pred = rs.pred(rate_test[n, 0], rate_test[n, 1], normalized=0)
-            SE += (pred - rate_test[n, 2]) ** 2
-
-        RMSE = np.sqrt(SE / n_tests)
-        print('User-user CF, RMSE =', RMSE)
-    else:
-        """**Sử dụng Lọc Cộng tác theo Mục (Item-Item Collaborative Filtering)**"""
-
-        rs = CF(rate_train, k=30, CF=0)
-        rs.fit()
-
-        n_tests = rate_test.shape[0]
-        SE = 0  # squared error
-        for n in range(n_tests):
-            pred = rs.pred(rate_test[n, 1], rate_test[n, 0], normalized=0)
-            SE += (pred - rate_test[n, 2]) ** 2
-
-        RMSE = np.sqrt(SE / n_tests)
-        print('Item-item CF, RMSE =', RMSE)
